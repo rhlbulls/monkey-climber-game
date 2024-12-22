@@ -21,7 +21,6 @@ export function createPlayer(scene, x, y, texture) {
 
 export function handlePlayerInput(player, cursorKeys) {
     if (cursorKeys.up.isDown && player.body.blocked.down) {
-
         player.setVelocityY(-player.speed / 2); // Jump when on the ground
         // Delay texture change with a setTimeout for each step
 
