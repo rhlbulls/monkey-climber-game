@@ -20,61 +20,73 @@ export function createPlayer(scene, x, y, texture) {
 }
 
 export function handlePlayerInput(player, cursorKeys) {
-    if (cursorKeys.up.isDown && player.body.blocked.down) {
-        player.setVelocityY(-player.speed / 2); // Jump when on the ground
-        // Delay texture change with a setTimeout for each step
-
-    } else if (cursorKeys.down.isDown) {
-        player.setVelocityY(player.speed / 2);
-
-    } else if (cursorKeys.left.isDown) {
-        if (!player.isChangingTexture) {
-            player.isChangingTexture = true; // Set flag to indicate texture change in progress
-
-            // Delay texture change with a setTimeout for each step
-            setTimeout(() => {
-                player.setTexture("monkey_left_1");
-            }, 0);  // Immediate setTexture change
-
-            setTimeout(() => {
-                player.setTexture("monkey_left_2");
-            }, 100); // Change after 300ms
-
-            setTimeout(() => {
-                player.setTexture("monkey_left_3");
-            }, 200); // Change after 600ms
-
-            setTimeout(() => {
-                player.setTexture("monkey_left_1");
-                player.isChangingTexture = false; // Reset texture change flag
-            }, 300); // Change back after 900ms
+    if (!player.body.blocked.down) {
+        if (cursorKeys.left.isDown && player.isMovingLeft) {
+            player.setTexture("monkey_left_jump_1");
+        } else if (cursorKeys.right.isDown) {
+            player.setTexture("monkey_right_jump_1");
         }
+    }
+    else if (player.body.blocked.down) {
+        if (cursorKeys.up.isDown) {
+            player.setVelocityY(-player.speed*0.65);
+        } else if (cursorKeys.down.isDown) {
+            player.setVelocityY(player.speed*0.65);
+        } else if (cursorKeys.left.isDown) {
+            player.isMovingLeft = true;
+            player.isMovingRight = false;
+            if (!player.isChangingTexture) {
+                player.isChangingTexture = true;
+                setTimeout(() => {
+                    player.setTexture("monkey_left_1");
+                }, 0);
 
-        player.setVelocityX(-player.speed);
-    } else if (cursorKeys.right.isDown) {
-        if (!player.isChangingTexture) {
-            player.isChangingTexture = true; // Set flag to indicate texture change in progress
+                setTimeout(() => {
+                    player.setTexture("monkey_left_2");
+                }, 100);
 
-            // Delay texture change with a setTimeout for each step
-            setTimeout(() => {
+                setTimeout(() => {
+                    player.setTexture("monkey_left_3");
+                }, 200);
+
+                setTimeout(() => {
+                    player.setTexture("monkey_left_1");
+                    player.isChangingTexture = false;
+                }, 300);
+            }
+
+            player.setVelocityX(-player.speed);
+        } else if (cursorKeys.right.isDown) {
+            player.isMovingRight = true;
+            player.isMovingLeft = false;
+            if (!player.isChangingTexture) {
+                player.isChangingTexture = true;
+
+                setTimeout(() => {
+                    player.setTexture("monkey_right_1");
+                }, 0);
+
+                setTimeout(() => {
+                    player.setTexture("monkey_right_2");
+                }, 100);
+
+                setTimeout(() => {
+                    player.setTexture("monkey_right_3");
+                }, 200);
+
+                setTimeout(() => {
+                    player.setTexture("monkey_right_1");
+                    player.isChangingTexture = false;
+                }, 300);
+            }
+            player.setVelocityX(player.speed);
+        } else {
+            player.setVelocityX(0);
+            if (player.isMovingLeft) {
+                player.setTexture("monkey_left_1");
+            } else {
                 player.setTexture("monkey_right_1");
-            }, 0);  // Immediate setTexture change
-
-            setTimeout(() => {
-                player.setTexture("monkey_right_2");
-            }, 100); // Change after 300ms
-
-            setTimeout(() => {
-                player.setTexture("monkey_right_3");
-            }, 200); // Change after 600ms
-
-            setTimeout(() => {
-                player.setTexture("monkey_right_1");
-                player.isChangingTexture = false; // Reset texture change flag
-            }, 300); // Change back after 900ms
+            }
         }
-        player.setVelocityX(player.speed);
-    } else {
-        player.setVelocityX(0);
     }
 }
