@@ -3,20 +3,26 @@ export function createPlatforms(scene, windowWidth, windowHeight) {
     const platformWidth = 150; // Width of the platform
     const platformHeight = 23; // Height of the platform
 
+    // Minimum horizontal distance to avoid stacking
+    const minHorizontalSpacing = platformWidth + 50; // Ensure no horizontal stacking
+
+    // Constant vertical spacing
+    const verticalSpacing = 100;
+
     // Generate platforms dynamically
     let lastX = windowWidth / 2; // Starting X position at the center
-    for (let i = 0; i < 10; i++) { // Adjust the count to generate more or fewer platforms
-        // Randomly choose vertical spacing between 100 and 200
-        const verticalSpacing = Math.random() * 10 + 110; // Random vertical spacing between 100 and 200
+
+    for (let i = 0; i < 100; i++) { // Adjust the count to generate more or fewer platforms
         const y = windowHeight - (300 + i * verticalSpacing); // Staggered height
 
-        // Randomly choose horizontal spacing between 200 and 350, and direction (left or right)
-        const randomOffset = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100 + 210); // Random offset between 200 and 350
+        // Randomly choose horizontal spacing and direction (left or right)
+        let randomOffset = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 100 + 300);
+        let x = lastX + randomOffset;
 
-        let x = lastX + randomOffset; // Add random offset to last X position
-        
-        // Ensure the x position stays within window bounds
-        x = Math.max(platformWidth / 2, Math.min(windowWidth - platformWidth / 2, x));
+        // Adjust X to maintain minimum horizontal spacing
+        if (Math.abs(x - lastX) < minHorizontalSpacing) {
+            x = lastX + Math.sign(randomOffset) * minHorizontalSpacing;
+        }
 
         lastX = x; // Update lastX to current x for the next platform
 

@@ -1,13 +1,8 @@
 export function createPlayer(scene, x, y, texture) {
     const player = scene.physics.add.sprite(x, y, texture);
-
-    // Set player properties
     player.setOrigin(0.5, 0.5);
     player.body.allowGravity = true;
-    player.setCollideWorldBounds(true);
-
     player.speed = 350;
-
     player.movement = {
         rightMove: 0,
         leftMove: 0,

@@ -7,3 +7,4 @@ export function createGround(scene, x, y, texture) {
 
   return ground;
 }
+
