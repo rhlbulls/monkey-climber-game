@@ -20,7 +20,8 @@ function createGameScene() {
     player: null,
     ground: null,
     cursor: null,
-    lastGroundX: 0, // To track the position of the last ground segment
+    lastGroundX: 0, // To track the position of the last ground segment (right side)
+    initialGroundX: 0, // To track the position of the initial ground (left side)
 
     preload() {
       this.load.image("monkey_right_1", "/assets/right/monkey1.png");
@@ -44,8 +45,12 @@ function createGameScene() {
       this.cameras.main.setBackgroundColor("#87CEEB"); // Set background color to sky blue
       const groundWidth = 2000;
       const groundHeight = 100;
+
+      // Create initial ground on the right side
       this.ground = createGround(this, 0, windowHeight - 200, "ground", groundWidth, groundHeight);
-      this.lastGroundX = groundWidth; // Set initial last ground position
+      this.lastGroundX = groundWidth; // Set initial last ground position (right side)
+      this.initialGroundX = 0; // Initial ground position for the left side
+
       this.player = createPlayer(this, 100, windowHeight - 300, "monkey_right_1");
       this.physics.add.collider(this.ground, this.player);
       this.cursor = this.input.keyboard.createCursorKeys();
@@ -57,17 +62,25 @@ function createGameScene() {
     update() {
       handlePlayerInput(this.player, this.cursor);
 
-      // Check if the player is approaching the edge of the last ground segment
-      const threshold = 1000; // Distance before creating the next segment
+      // Create ground on the right side as the player moves right
+      const threshold = 1000; // Distance before creating the next segment on the right
       if (this.player.x + threshold > this.lastGroundX) {
         const newGround = createGround(this, this.lastGroundX, windowHeight - 200, "ground", 2000, 100);
-        this.lastGroundX += 2000; // Update the last ground's position
+        this.lastGroundX += 2000; // Update the last ground's position on the right
         this.physics.add.collider(newGround, this.player); // Add collision with new ground
       }
-      
+
+      // Create ground on the left side as the player moves left
+      const leftThreshold = 500; // Distance before creating ground on the left side
+      if (this.player.x - leftThreshold < this.initialGroundX) {
+        const newGroundLeft = createGround(this, this.initialGroundX - 2000, windowHeight - 200, "ground", 2000, 100);
+        this.initialGroundX -= 2000; // Update the initial ground's position on the left
+        this.physics.add.collider(newGroundLeft, this.player); // Add collision with new ground
+      }
     },
   };
 }
+
 
 const config = {
   type: Phaser.WEBGL,
