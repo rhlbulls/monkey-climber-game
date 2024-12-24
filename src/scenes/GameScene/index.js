@@ -1,8 +1,9 @@
 import Phaser from "phaser";
-import WebFontLoader from "webfontloader";
-import { createPlayer, handlePlayerInput } from "../../objects/Player";
+import { handlePlayerInput } from "../../objects/Player";
 import { createGround } from "../../objects/Ground";
 import { createPlatforms } from "../../objects/Platform";
+import { preloadGameScene } from "./PreloadGameScene";
+import { createGameScene } from "./CreateGameScene";
 
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
@@ -26,51 +27,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("monkey_right_1", "/assets/right/monkey1.png");
-    this.load.image("monkey_right_2", "/assets/right/monkey2.png");
-    this.load.image("monkey_right_3", "/assets/right/monkey3.png");
-    this.load.image("monkey_right_jump_1", "/assets/right/monkey7.png");
-    this.load.image("monkey_right_jump_2", "/assets/right/monkey6.png");
-
-    this.load.image("monkey_left_1", "/assets/left/monkey1.png");
-    this.load.image("monkey_left_2", "/assets/left/monkey2.png");
-    this.load.image("monkey_left_3", "/assets/left/monkey3.png");
-    this.load.image("monkey_left_jump_1", "/assets/left/monkey7.png");
-    this.load.image("monkey_left_jump_2", "/assets/left/monkey6.png");
-
-    this.load.image("ground", "/assets/ground.png");
-    this.load.image("platform", "/assets/platforms/platform.png");
-    this.load.image("banana", "/assets/banana.png");
-
-    WebFontLoader.load({
-      google: {
-        families: ['Press Start 2P'],
-      },
-      active: () => {
-        this.isFontLoaded = true;
-      },
-    });
+    preloadGameScene(this)
   }
 
   create() {
-    this.highestScore = 0;
-
-    this.lastPlatformX = windowWidth / 2;
-    this.totalPlatformsCreated = 0;
-    this.cameras.main.setBackgroundColor("#87CEEB");
-    const groundWidth = 2000;
-    const groundHeight = 100;
-
-    this.ground = createGround(this, 0, windowHeight - 200, "ground", groundWidth, groundHeight);
-    this.lastGroundX = groundWidth;
-    this.initialGroundX = 0;
-
-    this.player = createPlayer(this, 100, windowHeight - 233, "monkey_right_1");
-    this.physics.add.collider(this.ground, this.player);
-    this.cursor = this.input.keyboard.createCursorKeys();
-    this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
-    this.physics.add.collider(this.player, this.platforms);
-    this.cameras.main.startFollow(this.player);
+    createGameScene(this)
   }
 
   update() {
@@ -124,7 +85,7 @@ export default class GameScene extends Phaser.Scene {
       this.physics.add.collider(newGround, this.player);
     }
 
-    const leftThreshold = 500;
+    const leftThreshold = 1000;
     if (this.player.x - leftThreshold < this.initialGroundX) {
       const newGroundLeft = createGround(this, this.initialGroundX - 2000, windowHeight - 200, "ground", 2000, 100);
       this.initialGroundX -= 2000;
