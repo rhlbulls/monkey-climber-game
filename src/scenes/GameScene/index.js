@@ -7,8 +7,6 @@ import { createPlatforms } from "../../objects/Platform";
 let windowWidth = window.innerWidth;
 let windowHeight = window.innerHeight;
 
-const speedDown = 300;
-
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
