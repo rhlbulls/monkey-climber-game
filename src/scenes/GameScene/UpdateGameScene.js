@@ -14,7 +14,10 @@ export const initializeUI = (scene) => {
         strokeThickness: 4,
     }).setShadow(2, 2, "#000", 3, true, true).setScrollFactor(0).setDepth(100);
 
-    scene.bestScoreText = scene.add.text(20, 70, "Best: 0", {
+    const storedHighScore = localStorage.getItem('highScore');
+    scene.highestScore = storedHighScore ? parseInt(storedHighScore) : 0;
+
+    scene.bestScoreText = scene.add.text(20, 70, `Best: ${scene.highestScore}`, {
         fontSize: "24px",
         fill: "#FFFFFF",
         fontFamily: "'Press Start 2P', sans-serif",
@@ -34,7 +37,8 @@ export const initializeUI = (scene) => {
         stroke: "#000",
         strokeThickness: 3,
     }).setScrollFactor(0).setDepth(100);
-}
+};
+
 
 export const updateGround = (scene) => {
     const threshold = 1000;
@@ -69,6 +73,8 @@ export const updateScore = (scene) => {
 
     if (currentScore > scene.highestScore) {
         scene.highestScore = currentScore;
+
+        localStorage.setItem('highScore', scene.highestScore);
         if (scene.bestScoreText) {
             scene.bestScoreText.setText(`Best: ${scene.highestScore}`);
         }
@@ -77,7 +83,8 @@ export const updateScore = (scene) => {
     if (scene.bananaCounterText) {
         scene.bananaCounterText.setText(`X ${scene.bananaCounter}`);
     }
-}
+};
+
 
 
 export const updateGameScene = (scene) => {
