@@ -63,6 +63,7 @@ function createGameScene() {
       this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
       this.physics.add.collider(this.player, this.platforms);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
+    
     },
 
     update() {
