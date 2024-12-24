@@ -1,4 +1,4 @@
-export function createPlatforms(scene, windowWidth, windowHeight) {
+export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPlatformsCreated) {
     const platformGroup = scene.physics.add.staticGroup(); // Create a static group for platforms
     const platformWidth = 150; // Width of the platform
     const platformHeight = 23; // Height of the platform
@@ -8,11 +8,7 @@ export function createPlatforms(scene, windowWidth, windowHeight) {
 
     // Constant vertical spacing
     const verticalSpacing = 100;
-
-    // Generate platforms dynamically
-    let lastX = windowWidth / 2; // Starting X position at the center
-
-    for (let i = 0; i < 100; i++) { // Adjust the count to generate more or fewer platforms
+    for (let i = totalPlatformsCreated; i < totalPlatformsCreated + 10; i++) { // Adjust the count to generate more or fewer platforms
         const y = windowHeight - (300 + i * verticalSpacing); // Staggered height
 
         // Randomly choose horizontal spacing and direction (left or right)
@@ -28,7 +24,11 @@ export function createPlatforms(scene, windowWidth, windowHeight) {
 
         // Add platform to the group
         platformGroup.create(x, y, "platform").setSize(platformWidth, platformHeight).setOrigin(0.5, 0.5);
+        if (i === totalPlatformsCreated + 9) {
+            scene.lastPlatformY = y;
+            scene.lastPlatformX = x;
+        }
     }
-
+    scene.totalPlatformsCreated += 10;
     return platformGroup;
 }

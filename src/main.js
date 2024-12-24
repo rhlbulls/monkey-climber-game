@@ -23,6 +23,10 @@ function createGameScene() {
     lastGroundX: 0, // To track the position of the last ground segment (right side)
     initialGroundX: 0, // To track the position of the initial ground (left side)
 
+    totalPlatformsCreated: 0,
+    lastPlatformX: 0,
+    lastPlatformY: 0,
+
     preload() {
       this.load.image("monkey_right_1", "/assets/right/monkey1.png");
       this.load.image("monkey_right_2", "/assets/right/monkey2.png");
@@ -42,6 +46,8 @@ function createGameScene() {
     },
 
     create() {
+      this.lastPlatformX = windowWidth / 2;
+      this.totalPlatformsCreated = 0;
       this.cameras.main.setBackgroundColor("#87CEEB"); // Set background color to sky blue
       const groundWidth = 2000;
       const groundHeight = 100;
@@ -54,7 +60,7 @@ function createGameScene() {
       this.player = createPlayer(this, 100, windowHeight - 300, "monkey_right_1");
       this.physics.add.collider(this.ground, this.player);
       this.cursor = this.input.keyboard.createCursorKeys();
-      this.platforms = createPlatforms(this, windowWidth, windowHeight);
+      this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
       this.physics.add.collider(this.player, this.platforms);
       this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
     },
@@ -76,6 +82,12 @@ function createGameScene() {
         const newGroundLeft = createGround(this, this.initialGroundX - 2000, windowHeight - 200, "ground", 2000, 100);
         this.initialGroundX -= 2000; // Update the initial ground's position on the left
         this.physics.add.collider(newGroundLeft, this.player); // Add collision with new ground
+      }
+
+      //creating platforms dynamically
+      if (Math.abs(this.player.y - this.lastPlatformY) < 300) {
+        this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
+        this.physics.add.collider(this.player, this.platforms);
       }
     },
   };
