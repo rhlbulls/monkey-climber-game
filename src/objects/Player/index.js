@@ -34,6 +34,7 @@ function changeTextureSequentially(player, textures, interval) {
         }
     }, interval);
 }
+
 export function handlePlayerInput(player, cursorKeys) {
     const { left, right, up, down } = cursorKeys;
 
