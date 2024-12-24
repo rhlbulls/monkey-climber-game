@@ -46,6 +46,8 @@ function createGameScene() {
       this.load.image("ground", "/assets/ground.png");
       this.load.image("platform", "/assets/platforms/platform.png");
 
+      this.load.image("banana", "/assets/banana.png");
+
       // Load the font asynchronously
       WebFontLoader.load({
         google: {
@@ -60,6 +62,8 @@ function createGameScene() {
 
     create() {
       this.highestScore = 0;
+      this.bananaCounter = 0;  // Initialize banana counter
+
       this.lastPlatformX = windowWidth / 2;
       this.totalPlatformsCreated = 0;
       this.cameras.main.setBackgroundColor("#87CEEB");
@@ -103,6 +107,21 @@ function createGameScene() {
           .setShadow(2, 2, "#000", 3, true, true)
           .setScrollFactor(0)
           .setDepth(100);
+
+        // Add banana counter image and text
+        this.bananaCounterImage = this.add.image(windowWidth - 150, 60, "banana")
+          .setScale(0.5)
+          .setScrollFactor(0)
+          .setDepth(100);
+        this.bananaCounterText = this.add.text(windowWidth - 100, 50, "X 0", {
+          fontSize: "24px",
+          fill: "#FFFFFF",
+          fontFamily: "'Press Start 2P', sans-serif",
+          stroke: "#000",
+          strokeThickness: 3,
+        })
+          .setScrollFactor(0)
+          .setDepth(100);
       }
 
       handlePlayerInput(this.player, this.cursor);
@@ -140,7 +159,13 @@ function createGameScene() {
           this.bestScoreText.setText(`Best: ${this.highestScore}`);
         }
       }
-    },
+
+      // Update the banana counter
+      if (this.bananaCounterText) {
+        this.bananaCounterText.setText(`X ${this.bananaCounter}`);
+      }
+    }
+
   };
 }
 
