@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import WebFontLoader from "webfontloader";
 import { createPlayer, handlePlayerInput } from "./Player";
 import { createGround } from "./Ground";
 import { createPlatforms } from "./Platform";
@@ -14,18 +15,20 @@ const sizes = {
 
 const speedDown = 300;
 
-// Update the Game Scene with Infinite Ground
 function createGameScene() {
   return {
     player: null,
     ground: null,
     cursor: null,
-    lastGroundX: 0, // To track the position of the last ground segment (right side)
-    initialGroundX: 0, // To track the position of the initial ground (left side)
-
+    lastGroundX: 0,
+    initialGroundX: 0,
     totalPlatformsCreated: 0,
     lastPlatformX: 0,
     lastPlatformY: 0,
+    scoreText: null,
+    highestScore: 0,
+    bestScoreText: null,
+    isFontLoaded: false,  // Flag to track font loading
 
     preload() {
       this.load.image("monkey_right_1", "/assets/right/monkey1.png");
@@ -41,59 +44,105 @@ function createGameScene() {
       this.load.image("monkey_left_jump_2", "/assets/left/monkey6.png");
 
       this.load.image("ground", "/assets/ground.png");
-
       this.load.image("platform", "/assets/platforms/platform.png");
+
+      // Load the font asynchronously
+      WebFontLoader.load({
+        google: {
+          families: ['Press Start 2P'],
+        },
+        active: () => {
+          // Set the font loaded flag to true
+          this.isFontLoaded = true;
+        },
+      });
     },
 
     create() {
+      this.highestScore = 0;
       this.lastPlatformX = windowWidth / 2;
       this.totalPlatformsCreated = 0;
-      this.cameras.main.setBackgroundColor("#87CEEB"); // Set background color to sky blue
+      this.cameras.main.setBackgroundColor("#87CEEB");
       const groundWidth = 2000;
       const groundHeight = 100;
 
-      // Create initial ground on the right side
       this.ground = createGround(this, 0, windowHeight - 200, "ground", groundWidth, groundHeight);
-      this.lastGroundX = groundWidth; // Set initial last ground position (right side)
-      this.initialGroundX = 0; // Initial ground position for the left side
+      this.lastGroundX = groundWidth;
+      this.initialGroundX = 0;
 
-      this.player = createPlayer(this, 100, windowHeight - 300, "monkey_right_1");
+      this.player = createPlayer(this, 100, windowHeight - 233, "monkey_right_1");
       this.physics.add.collider(this.ground, this.player);
       this.cursor = this.input.keyboard.createCursorKeys();
       this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
       this.physics.add.collider(this.player, this.platforms);
-      this.cameras.main.startFollow(this.player, true, 0.05, 0.05);
-    
+      this.cameras.main.startFollow(this.player);
     },
 
     update() {
+      // Only create score text after the font is loaded and ensure it's not created again
+      if (this.isFontLoaded && !this.scoreText) {
+        this.scoreText = this.add.text(20, 30, "Score: 0", {
+          fontSize: "32px",
+          fill: "#FFD700",
+          fontFamily: "'Press Start 2P', sans-serif",
+          stroke: "#000",
+          strokeThickness: 4,
+        })
+          .setShadow(2, 2, "#000", 3, true, true)
+          .setScrollFactor(0)
+          .setDepth(100);
+
+        // Create and always show the "Best" score text
+        this.bestScoreText = this.add.text(20, 70, "Best: 0", {
+          fontSize: "24px",
+          fill: "#FFFFFF",
+          fontFamily: "'Press Start 2P', sans-serif",
+          stroke: "#000",
+          strokeThickness: 3,
+        })
+          .setShadow(2, 2, "#000", 3, true, true)
+          .setScrollFactor(0)
+          .setDepth(100);
+      }
+
       handlePlayerInput(this.player, this.cursor);
 
-      // Create ground on the right side as the player moves right
-      const threshold = 1000; // Distance before creating the next segment on the right
+      const threshold = 1000;
       if (this.player.x + threshold > this.lastGroundX) {
         const newGround = createGround(this, this.lastGroundX, windowHeight - 200, "ground", 2000, 100);
-        this.lastGroundX += 2000; // Update the last ground's position on the right
-        this.physics.add.collider(newGround, this.player); // Add collision with new ground
+        this.lastGroundX += 2000;
+        this.physics.add.collider(newGround, this.player);
       }
 
-      // Create ground on the left side as the player moves left
-      const leftThreshold = 500; // Distance before creating ground on the left side
+      const leftThreshold = 500;
       if (this.player.x - leftThreshold < this.initialGroundX) {
         const newGroundLeft = createGround(this, this.initialGroundX - 2000, windowHeight - 200, "ground", 2000, 100);
-        this.initialGroundX -= 2000; // Update the initial ground's position on the left
-        this.physics.add.collider(newGroundLeft, this.player); // Add collision with new ground
+        this.initialGroundX -= 2000;
+        this.physics.add.collider(newGroundLeft, this.player);
       }
 
-      //creating platforms dynamically
       if (Math.abs(this.player.y - this.lastPlatformY) < 300) {
         this.platforms = createPlatforms(this, windowWidth, windowHeight, this.lastPlatformX, this.totalPlatformsCreated);
         this.physics.add.collider(this.player, this.platforms);
       }
+
+      // Update the score
+      const heightAboveGround = Math.max(0, windowHeight - 237 - this.player.y);
+      const currentScore = Math.floor(heightAboveGround);
+      if (this.scoreText) {
+        this.scoreText.setText(`Score: ${currentScore}`);
+      }
+
+      // Update the "Best" score if a new highest score is achieved
+      if (currentScore > this.highestScore) {
+        this.highestScore = currentScore;
+        if (this.bestScoreText) {
+          this.bestScoreText.setText(`Best: ${this.highestScore}`);
+        }
+      }
     },
   };
 }
-
 
 const config = {
   type: Phaser.WEBGL,
