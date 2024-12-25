@@ -12,7 +12,7 @@ export function createPlayer(scene, x, y, texture) {
     player.isChangingTexture = false;
     player.isMovingLeft = false;
     player.isMovingRight = false;
-    player.setSize(116,74);
+    player.setSize(116, 74);
     scene.add.existing(player);
 
     return player;
@@ -35,18 +35,27 @@ function changeTextureSequentially(player, textures, interval) {
     }, interval);
 }
 
-export function handlePlayerInput(player, cursorKeys) {
+export function handlePlayerInput(scene, player, cursorKeys) {
     const { left, right, up, down } = cursorKeys;
 
-    if (up.isDown && player.body.blocked.down) {
+    const jumpKey = scene.input.keyboard.addKey('W');
+    const spaceKey = scene.input.keyboard.addKey('SPACE');
+    const isJumping = up.isDown || jumpKey.isDown || spaceKey.isDown;
+
+    if (isJumping && player.body.blocked.down) {
         player.setVelocityY(-player.speed * 0.85);
     }
 
-    if (down.isDown && player.body.blocked.down) {
+    const downKey = scene.input.keyboard.addKey('S');
+    if (down.isDown || downKey.isDown) {
         player.setVelocityY(player.speed * 0.65);
     }
 
-    if (left.isDown) {
+    const leftKey = scene.input.keyboard.addKey('A');
+    const rightKey = scene.input.keyboard.addKey('D');
+
+    // Handle left movement
+    if (left.isDown || leftKey.isDown) {
         player.isMovingLeft = true;
         player.isMovingRight = false;
         player.setVelocityX(-player.speed);
@@ -56,7 +65,8 @@ export function handlePlayerInput(player, cursorKeys) {
         } else {
             changeTextureSequentially(player, ["monkey_left_1", "monkey_left_2", "monkey_left_3", "monkey_left_1"], 100);
         }
-    } else if (right.isDown) {
+    }
+    else if (right.isDown || rightKey.isDown) {
         player.isMovingRight = true;
         player.isMovingLeft = false;
         player.setVelocityX(player.speed);
@@ -66,7 +76,8 @@ export function handlePlayerInput(player, cursorKeys) {
         } else {
             changeTextureSequentially(player, ["monkey_right_1", "monkey_right_2", "monkey_right_3", "monkey_right_1"], 100);
         }
-    } else {
+    }
+    else {
         player.setVelocityX(0);
         if (player.body.blocked.down) {
             if (player.isMovingLeft) {
@@ -77,3 +88,4 @@ export function handlePlayerInput(player, cursorKeys) {
         }
     }
 }
+

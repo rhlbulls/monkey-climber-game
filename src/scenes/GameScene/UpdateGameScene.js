@@ -94,7 +94,7 @@ export const updateGameScene = (scene) => {
         initializeUI(scene);
     }
 
-    handlePlayerInput(scene.player, scene.cursor);
+    handlePlayerInput(scene, scene.player, scene.cursor);
 
     updateGround(scene);
     updatePlatforms(scene);
