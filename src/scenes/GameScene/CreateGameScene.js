@@ -6,6 +6,7 @@ const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
 export const createGameScene = (scene) => {
+    scene.platforms = scene.physics.add.staticGroup()
     scene.highestScore = 0;
 
     scene.lastPlatformX = windowWidth / 2;
@@ -21,7 +22,7 @@ export const createGameScene = (scene) => {
     scene.player = createPlayer(scene, 100, windowHeight - 233, "monkey_right_1");
     scene.physics.add.collider(scene.ground, scene.player);
     scene.cursor = scene.input.keyboard.createCursorKeys();
-    scene.platforms = createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
+    createPlatforms(scene, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
     scene.physics.add.collider(scene.player, scene.platforms);
     scene.cameras.main.startFollow(scene.player);
 }

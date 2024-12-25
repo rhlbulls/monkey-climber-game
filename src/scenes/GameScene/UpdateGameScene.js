@@ -58,7 +58,7 @@ export const updateGround = (scene) => {
 
 export const updatePlatforms = (scene) => {
     if (Math.abs(scene.player.y - scene.lastPlatformY) < 300) {
-        scene.platforms = createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
+        createPlatforms(scene, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
         scene.physics.add.collider(scene.player, scene.platforms);
     }
 }

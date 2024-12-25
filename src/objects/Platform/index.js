@@ -15,8 +15,8 @@ export function createBanana(scene, x, y) {
     });
 }
 
-export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPlatformsCreated) {
-    const platformGroup = scene.physics.add.staticGroup(); 
+export function createPlatforms(scene, windowHeight, lastX, totalPlatformsCreated) {
+
     const platformWidth = 150; 
     const platformHeight = 23; 
 
@@ -35,7 +35,7 @@ export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPl
 
         lastX = x; 
 
-        platformGroup.create(x, y, "platform").setSize(platformWidth, platformHeight).setOrigin(0.5, 0.5);
+        scene.platforms.create(x, y, "platform").setSize(platformWidth, platformHeight).setOrigin(0.5, 0.5);
 
         if (Math.random() > 0.7) {  
             createBanana(scene,x, y - 40); 
@@ -47,5 +47,4 @@ export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPl
         }
     }
     scene.totalPlatformsCreated += 10;
-    return platformGroup;
 }
