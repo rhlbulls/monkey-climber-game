@@ -5,6 +5,50 @@ import { createPlatforms } from "../../objects/Platform";
 const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
+const createInstructionText = (scene) => {
+    scene.highestScore = parseInt(localStorage.getItem('highScore')) || 0;
+
+    if (scene.highestScore === 0) {
+        const instructions = "- Move with arrow keys or WASD—space bar to jump\n- Collect bananas—you'll need them to crush enemies.\n- The higher you go, the more points you earn.\n- It gets tougher as you climb. Good luck!";
+
+        // Create the instruction text object but keep it empty initially
+        scene.instructionText = scene.add.text(
+            scene.cameras.main.width / 2, // Horizontally center
+            scene.cameras.main.height + 100, // Near the bottom of the screen
+            '', // Start with an empty string for typewriter effect
+            {
+                fontSize: '16px',
+                fill: '#ffffff',
+                fontFamily: "'Press Start 2P', sans-serif",
+                lineSpacing: 10
+            }
+        )
+            .setDepth(100) // Ensure it's on top of other elements
+            .setOrigin(0.5, 1); // Center horizontally and align to the bottom
+
+        let currentText = ''; // Track the current text
+        let index = 0; // Track the current character index
+        const typingSpeed = 50; // Time between each character (in ms)
+
+        scene.time.addEvent({
+            delay: typingSpeed,
+            callback: () => {
+                if (index < instructions.length) {
+                    currentText += instructions.charAt(index);
+                    scene.instructionText.setText(currentText);
+
+                    // Keep the text horizontally centered
+                    scene.instructionText.x = 0;
+
+                    index++;
+                }
+            },
+            loop: true,
+        });
+    }
+
+}
+
 export const initializeUI = (scene) => {
     scene.scoreText = scene.add.text(20, 30, "Score: 0", {
         fontSize: "32px",
@@ -37,6 +81,8 @@ export const initializeUI = (scene) => {
         stroke: "#000",
         strokeThickness: 3,
     }).setScrollFactor(0).setDepth(100);
+
+    createInstructionText(scene)
 };
 
 
@@ -91,10 +137,10 @@ export const updateScore = (scene) => {
 
 const updateDarkerBackground = (scene) => {
     const playerY = window.innerHeight - 237 - scene.player.y;
-    const minY = 100;  
-    const maxY = 1000; 
+    const minY = 100;
+    const maxY = 1000;
     let darkenFactor = (playerY - minY) / (maxY - minY);
-    darkenFactor = darkenFactor * 0.001; 
+    darkenFactor = darkenFactor * 0.001;
     const darkenedColor = `rgba(135, 206, 235, ${1 - darkenFactor})`;
     scene.cameras.main.setBackgroundColor(darkenedColor);
 }

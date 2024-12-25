@@ -19,6 +19,7 @@ export default class GameScene extends Phaser.Scene {
     this.bestScoreText = null;
     this.isFontLoaded = false;
     this.bananaCounter = 0;
+    this.instructionText = null;
   }
 
   preload() {
