@@ -2,14 +2,13 @@ import { createGround } from "../../objects/Ground";
 import { createPlayer } from "../../objects/Player";
 import { createPlatforms } from "../../objects/Platform";
 
-const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
 export const createGameScene = (scene) => {
     scene.platforms = scene.physics.add.staticGroup()
     scene.highestScore = 0;
 
-    scene.lastPlatformX = windowWidth / 2;
+    scene.lastPlatformX = 100;
     scene.totalPlatformsCreated = 0;
     scene.cameras.main.setBackgroundColor("#87CEEB");
     const groundWidth = 2000;
