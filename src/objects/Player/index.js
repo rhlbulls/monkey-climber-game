@@ -36,7 +36,7 @@ function changeTextureSequentially(player, textures, interval) {
 }
 
 export function handlePlayerInput(scene, player, cursorKeys) {
-    const { left, right, up, down } = cursorKeys;
+    const { left, right, up } = cursorKeys;
 
     const jumpKey = scene.input.keyboard.addKey('W');
     const spaceKey = scene.input.keyboard.addKey('SPACE');
@@ -44,11 +44,6 @@ export function handlePlayerInput(scene, player, cursorKeys) {
 
     if (isJumping && player.body.blocked.down) {
         player.setVelocityY(-player.speed * 0.85);
-    }
-
-    const downKey = scene.input.keyboard.addKey('S');
-    if (down.isDown || downKey.isDown) {
-        player.setVelocityY(player.speed * 0.65);
     }
 
     const leftKey = scene.input.keyboard.addKey('A');
