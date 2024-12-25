@@ -61,7 +61,7 @@ export const updatePlatforms = (scene) => {
         createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
         scene.physics.add.collider(scene.player, scene.platforms);
     }
-    
+
 }
 
 export const updateScore = (scene) => {
@@ -89,6 +89,16 @@ export const updateScore = (scene) => {
 };
 
 
+const updateDarkerBackground = (scene) => {
+    const playerY = window.innerHeight - 237 - scene.player.y;
+    const minY = 100;  
+    const maxY = 1000; 
+    let darkenFactor = (playerY - minY) / (maxY - minY);
+    darkenFactor = darkenFactor * 0.001; 
+    const darkenedColor = `rgba(135, 206, 235, ${1 - darkenFactor})`;
+    scene.cameras.main.setBackgroundColor(darkenedColor);
+}
+
 
 export const updateGameScene = (scene) => {
     if (scene.isFontLoaded && !scene.scoreText) {
@@ -100,4 +110,5 @@ export const updateGameScene = (scene) => {
     updateGround(scene);
     updatePlatforms(scene);
     updateScore(scene);
+    updateDarkerBackground(scene);
 }

@@ -11,7 +11,8 @@ export const createGameScene = (scene) => {
 
     scene.lastPlatformX = 100;
     scene.totalPlatformsCreated = 0;
-    scene.cameras.main.setBackgroundColor("#87CEEB");
+    const baseColor = "#87CEEB"; // Light blue base color
+    scene.cameras.main.setBackgroundColor(baseColor);
     const groundWidth = 2000;
     const groundHeight = 100;
 
@@ -25,4 +26,4 @@ export const createGameScene = (scene) => {
     createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
     scene.physics.add.collider(scene.player, scene.platforms);
     scene.cameras.main.startFollow(scene.player);
-}
+};
