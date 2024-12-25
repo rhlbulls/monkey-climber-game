@@ -2,6 +2,7 @@ import { createGround } from "../../objects/Ground";
 import { createPlayer } from "../../objects/Player";
 import { createPlatforms } from "../../objects/Platform";
 
+const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
 export const createGameScene = (scene) => {
@@ -21,7 +22,7 @@ export const createGameScene = (scene) => {
     scene.player = createPlayer(scene, 100, windowHeight - 233, "monkey_right_1");
     scene.physics.add.collider(scene.ground, scene.player);
     scene.cursor = scene.input.keyboard.createCursorKeys();
-    createPlatforms(scene, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
+    createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
     scene.physics.add.collider(scene.player, scene.platforms);
     scene.cameras.main.startFollow(scene.player);
 }
