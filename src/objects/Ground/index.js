@@ -4,7 +4,6 @@ export function createGround(scene, x, y, texture) {
   ground.setOrigin(0, 0);
   ground.setScale(1, 1);
   ground.refreshBody();
-
   return ground;
 }
 

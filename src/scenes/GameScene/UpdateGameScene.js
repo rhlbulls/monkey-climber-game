@@ -50,7 +50,7 @@ export const updateGround = (scene) => {
 
     const leftThreshold = 1000;
     if (scene.player.x - leftThreshold < scene.initialGroundX) {
-        const newGroundLeft = createGround(scene, scene.initialGroundX - 2000, windowHeight - 200, "ground", 2000, 100);
+        const newGroundLeft = createGround(scene, scene.initialGroundX - 1900, windowHeight - 200, "ground", 2000, 100);
         scene.initialGroundX -= 2000;
         scene.physics.add.collider(newGroundLeft, scene.player);
     }
