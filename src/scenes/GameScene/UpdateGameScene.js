@@ -65,8 +65,10 @@ export const updatePlatforms = (scene) => {
 
 export const updateScore = (scene) => {
     const heightAboveGround = Math.max(0, windowHeight - 237 - scene.player.y);
-    const currentScore = Math.floor(heightAboveGround);
-
+    let currentScore = Math.floor(heightAboveGround) - 11;
+    if (currentScore < 0) {
+        currentScore = 0
+    }
     if (scene.scoreText) {
         scene.scoreText.setText(`Score: ${currentScore}`);
     }
