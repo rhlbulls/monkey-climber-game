@@ -61,6 +61,7 @@ export const updatePlatforms = (scene) => {
         createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
         scene.physics.add.collider(scene.player, scene.platforms);
     }
+    
 }
 
 export const updateScore = (scene) => {
