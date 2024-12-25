@@ -58,7 +58,7 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
 
 
 function createPlatformAndBanana(scene, x, y, platformWidth, platformHeight) {
-    const isSliding = Math.random() > 0.2;
+    const isSliding = Math.random() > 0.8;
 
     if (isSliding) {
         const slideRange = Math.random() * 100 + 50;
