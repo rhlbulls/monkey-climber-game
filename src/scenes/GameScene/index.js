@@ -20,6 +20,8 @@ export default class GameScene extends Phaser.Scene {
     this.isFontLoaded = false;
     this.bananaCounter = 0;
     this.instructionText = null;
+    this.playerHealth = 100;
+    this.bananaCounterText = null;
   }
 
   preload() {

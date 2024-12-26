@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 import { handlePlayerInput } from "../../objects/Player";
 import { createGround } from "../../objects/Ground";
 import { createPlatforms } from "../../objects/Platform";
@@ -5,11 +6,56 @@ import { createPlatforms } from "../../objects/Platform";
 const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
+const HEALTH_BAR_X = 70;
+const HEALTH_BAR_Y = windowHeight - 70;
+const HEALTH_BAR_WIDTH = 200;
+const HEALTH_BAR_HEIGHT = 20;
+const BORDER_RADIUS = 4;
+const HEALTH_BAR_DEPTH = 90;
+const HEART_ICON_X = 50;
+const HEART_ICON_Y = windowHeight - 50;
+const BORDER_THICKNESS = 6;
+
+const createPlayerHealthBar = (scene) => {
+    scene.add.image(HEART_ICON_X, HEART_ICON_Y, "heart").setScale(1)
+        .setScrollFactor(0)
+        .setDepth(100);
+
+    scene.healthBarBorder = scene.add.graphics()
+        .setScrollFactor(0)
+        .setDepth(HEALTH_BAR_DEPTH);
+    scene.healthBarBorder.lineStyle(BORDER_THICKNESS, 0x000000, 1);
+    scene.healthBarBorder.strokeRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, BORDER_RADIUS); // Rounded corners
+
+    scene.healthBarBackground = scene.add.graphics()
+        .setScrollFactor(0)
+        .setDepth(HEALTH_BAR_DEPTH);
+    scene.healthBarBackground.fillStyle(0x000000, 1);
+    scene.healthBarBackground.fillRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, BORDER_RADIUS); // Rounded corners
+
+    scene.healthBar = scene.add.graphics()
+        .setScrollFactor(0)
+        .setDepth(HEALTH_BAR_DEPTH);
+    scene.healthBar.fillStyle(0xFF0000, 1);
+    scene.healthBar.fillRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, HEALTH_BAR_WIDTH, HEALTH_BAR_HEIGHT, BORDER_RADIUS);
+};
+
+export const updateHealthBar = (scene) => {
+    const healthWidth = ((scene.playerHealth / 100) * HEALTH_BAR_WIDTH) + 10;
+    const clampedHealthWidth = Phaser.Math.Clamp(healthWidth, 0, HEALTH_BAR_WIDTH);
+
+    scene.healthBar.clear();
+    scene.healthBar.fillStyle(0xc0200f, 1);
+    scene.healthBar.fillRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, clampedHealthWidth, HEALTH_BAR_HEIGHT, BORDER_RADIUS); // Fill with rounded corners  
+};
+
+
+
 const createInstructionText = (scene) => {
     scene.highestScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     if (scene.highestScore === 0) {
-        const instructions = "- Move with arrow keys or WASD—space bar to jump\n- Collect bananas—you'll need them to crush enemies.\n- The higher you go, the more points you earn.\n- It gets tougher as you climb. Good luck!";
+        const instructions = "- Move with arrow keys or WASD—space bar to jump\n- Collect bananas—you'll need them to crush enemies.\n- Press E or left-click to throw bananas. \n- The higher you go, the more points you earn!";
 
         // Create the instruction text object but keep it empty initially
         scene.instructionText = scene.add.text(
@@ -73,7 +119,6 @@ export const initializeUI = (scene) => {
         .setScale(0.5)
         .setScrollFactor(0)
         .setDepth(100);
-
     scene.bananaCounterText = scene.add.text(windowWidth - 100, 50, "X 0", {
         fontSize: "24px",
         fill: "#FFFFFF",
@@ -81,6 +126,8 @@ export const initializeUI = (scene) => {
         stroke: "#000",
         strokeThickness: 3,
     }).setScrollFactor(0).setDepth(100);
+
+    createPlayerHealthBar(scene);
 
     createInstructionText(scene)
 };
@@ -152,6 +199,23 @@ const updateDarkerBackground = (scene) => {
     scene.cameras.main.setBackgroundColor(darkenedColor);
 }
 
+const updateFallDamage = (scene) => {
+    const velocityThreshold = 40;
+    const maxVelocity = 1200; 
+    const maxDamage = 10; 
+
+    if (scene.player.body.touching.down && scene.player.prevVelocityY > velocityThreshold) {
+        const damageFactor = Phaser.Math.Clamp(
+            (scene.player.prevVelocityY - velocityThreshold) / (maxVelocity - velocityThreshold),
+            0,
+            1
+        );
+        const damage = Math.round(damageFactor * maxDamage);
+
+        scene.playerHealth = Math.max(0, scene.playerHealth - damage);
+    }
+    scene.player.prevVelocityY = scene.player.body.velocity.y;
+}
 
 export const updateGameScene = (scene) => {
     if (scene.isFontLoaded && !scene.scoreText) {
@@ -159,11 +223,11 @@ export const updateGameScene = (scene) => {
     }
 
     handlePlayerInput(scene, scene.player, scene.cursor);
-
     updateGround(scene);
     updatePlatforms(scene);
     updateScore(scene);
     updateDarkerBackground(scene);
-
+    updateFallDamage(scene);
+    updateHealthBar(scene);
 
 }

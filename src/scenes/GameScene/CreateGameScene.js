@@ -6,12 +6,14 @@ const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
 export const createGameScene = (scene) => {
+    scene.bananaCounter = 0;
+    scene.playerHealth = 100;
     scene.platforms = scene.physics.add.staticGroup()
     scene.highestScore = 0;
 
     scene.lastPlatformX = 100;
     scene.totalPlatformsCreated = 0;
-    const baseColor = "#87CEEB"; 
+    const baseColor = "#87CEEB";
     scene.cameras.main.setBackgroundColor(baseColor);
     const groundWidth = 2000;
     const groundHeight = 100;

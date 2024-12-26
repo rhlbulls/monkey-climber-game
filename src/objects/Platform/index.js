@@ -50,7 +50,6 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
         const slideOffset = Math.sin(elapsed * slideSpeed) * slideRange;
 
         platform.x = platform.initialX + slideOffset;
-
         platform.body.updateFromGameObject();
     });
 }

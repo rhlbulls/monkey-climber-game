@@ -16,7 +16,7 @@ export const preloadGameScene = (scene) => {
     scene.load.image("ground", "/assets/ground.png");
     scene.load.image("platform", "/assets/platforms/platform.png");
     scene.load.image("banana", "/assets/banana.png");
-
+    scene.load.image("heart","/assets/heart.png");
     WebFontLoader.load({
         google: {
             families: ['Press Start 2P'],
