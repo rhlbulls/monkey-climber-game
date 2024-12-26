@@ -44,9 +44,9 @@ export const updateHealthBar = (scene) => {
     const healthWidth = ((scene.playerHealth / 100) * HEALTH_BAR_WIDTH) + 10;
     const clampedHealthWidth = Phaser.Math.Clamp(healthWidth, 0, HEALTH_BAR_WIDTH);
 
-    scene.healthBar.clear();
-    scene.healthBar.fillStyle(0xc0200f, 1);
-    scene.healthBar.fillRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, clampedHealthWidth, HEALTH_BAR_HEIGHT, BORDER_RADIUS); // Fill with rounded corners  
+    scene.healthBar?.clear();
+    scene.healthBar?.fillStyle(0xc0200f, 1);
+    scene.healthBar?.fillRoundedRect(HEALTH_BAR_X, HEALTH_BAR_Y, clampedHealthWidth, HEALTH_BAR_HEIGHT, BORDER_RADIUS); // Fill with rounded corners  
 };
 
 
