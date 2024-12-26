@@ -215,6 +215,15 @@ const updateFallDamage = (scene) => {
     scene.player.prevVelocityY = scene.player.body.velocity.y;
 }
 
+export const resetAfterDeath = (scene) => {
+    setTimeout(() => {
+        scene.isFontLoaded = false;
+        scene.scoreText = null;
+        scene.scene.restart(); // Re-start the scene
+        scene.playerHasDied = false;
+    }, 2000);
+}
+
 const checkPlayerAlive = (scene) => {
     if (scene.playerHealth <= 0 && !scene.playerHasDied) {
         scene.playerHasDied = true;
@@ -227,15 +236,7 @@ const checkPlayerAlive = (scene) => {
 
         scene.player.body.setVelocity(0, 0);
         scene.player.setActive(false);
-
-        setTimeout(() => {
-
-            // Ensure all necessary cleanup or changes are done before restarting
-            scene.isFontLoaded = false;
-            scene.scoreText = null;
-            scene.scene.restart(); // Re-start the scene
-            scene.playerHasDied = false;
-        }, 2000);
+        resetAfterDeath(scene);
     }
 };
 
