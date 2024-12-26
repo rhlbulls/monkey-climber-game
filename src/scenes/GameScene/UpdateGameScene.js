@@ -200,9 +200,9 @@ const updateDarkerBackground = (scene) => {
 }
 
 const updateFallDamage = (scene) => {
-    const velocityThreshold = 40;
-    const maxVelocity = 1200; 
-    const maxDamage = 10; 
+    const velocityThreshold = 200;
+    const maxVelocity = 2000; 
+    const maxDamage = 100; 
 
     if (scene.player.body.touching.down && scene.player.prevVelocityY > velocityThreshold) {
         const damageFactor = Phaser.Math.Clamp(
