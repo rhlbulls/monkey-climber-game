@@ -8,7 +8,10 @@ const windowHeight = window.innerHeight;
 export const createGameScene = (scene) => {
     scene.bananaCounter = 0;
     scene.playerHealth = 100;
-    scene.platforms = scene.physics.add.staticGroup()
+    scene.platforms = scene.physics.add.group({
+        immovable: true, // Prevent the platform from being affected by forces
+        allowGravity: false, // Ignore gravity for platforms
+    })
     scene.highestScore = 0;
 
     scene.lastPlatformX = 100;

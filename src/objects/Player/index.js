@@ -36,6 +36,10 @@ function changeTextureSequentially(player, textures, interval) {
 }
 
 export function handlePlayerInput(scene, player, cursorKeys) {
+    if (scene.playerHasDied) {
+        return;
+    }
+    
     const { left, right, up } = cursorKeys;
 
     const jumpKey = scene.input.keyboard.addKey('W');

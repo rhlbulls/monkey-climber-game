@@ -9,9 +9,42 @@ export function createBanana(scene, x, y) {
     scene.physics.add.collider(scene.player, banana, () => {
         banana.destroy();
         scene.bananaCounter++;
-        if (scene.bananaCounterText) {
-            scene.bananaCounterText.setText(`Bananas: ${scene.bananaCounter}`);
+    });
+}
+
+export function createHeart(scene, x, y) {
+    const heart = scene.add.image(x, y, "heart").setScale(0.75);
+
+    scene.physics.world.enable(heart);
+    heart.body.setAllowGravity(false);
+    heart.body.setImmovable(true);
+
+    heart.flipState = 0;
+    heart.flipSpeed = 100;
+
+    heart.bounceSpeed = 0.01;
+    heart.bounceHeight = 5;
+    heart.initialY = y;
+
+    scene.physics.add.collider(scene.player, heart, () => {
+        heart.destroy();
+        scene.playerHealth = Math.min(scene.playerHealth + 10, 100);
+    });
+
+    scene.events.on('update', () => {
+        if (scene.time.now % (heart.flipSpeed * 1000) < heart.flipSpeed * 500) {
+            if (heart.flipState === 0) {
+                heart.setFlipX(true);
+                heart.flipState = 1;
+            }
+        } else {
+            if (heart.flipState === 1) {
+                heart.setFlipX(false);
+                heart.flipState = 0;
+            }
         }
+
+        heart.y = heart.initialY + Math.sin(scene.time.now * heart.bounceSpeed) * heart.bounceHeight;
     });
 }
 
@@ -30,12 +63,6 @@ function adjustForConsecutivePlatforms(x, lastX, platformWidth) {
     return x;
 }
 
-function updateBananaCounterText(scene) {
-    if (scene.bananaCounterText) {
-        scene.bananaCounterText.setText(`Bananas: ${scene.bananaCounter}`);
-    }
-}
-
 function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
     const platform = scene.platforms.create(x, y, "platform")
         .setOrigin(0.5, 0.5);
@@ -43,20 +70,17 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
     platform.initialX = x;
     platform.slideRange = slideRange;
     platform.slideSpeed = slideSpeed;
-    platform.isSliding = true;
 
     scene.events.on('update', () => {
         const elapsed = scene.time.now;
         const slideOffset = Math.sin(elapsed * slideSpeed) * slideRange;
 
-        platform.x = platform.initialX + slideOffset;
-        platform.body.updateFromGameObject();
+        platform.setX(platform.initialX + slideOffset); // Update visual position only
     });
 }
 
 
-
-function createPlatformAndBanana(scene, x, y, platformWidth, platformHeight) {
+function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
     const isSliding = Math.random() > 0.8;
 
     if (isSliding) {
@@ -71,6 +95,9 @@ function createPlatformAndBanana(scene, x, y, platformWidth, platformHeight) {
 
         if (Math.random() > 0.7) {
             createBanana(scene, x, y - 40);
+        }
+        else if (Math.random() > 0.9) {
+            createHeart(scene, x, y - 40);
         }
     }
 }
@@ -94,9 +121,7 @@ export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPl
 
         lastX = x;
 
-        createPlatformAndBanana(scene, x, y, platformWidth, platformHeight);
-
-        updateBananaCounterText(scene);
+        createPlatformAndItem(scene, x, y, platformWidth, platformHeight);
 
         if (i === totalPlatformsCreated + 9) {
             scene.lastPlatformY = y;

@@ -50,7 +50,6 @@ export const updateHealthBar = (scene) => {
 };
 
 
-
 const createInstructionText = (scene) => {
     scene.highestScore = parseInt(localStorage.getItem('highScore')) || 0;
 
@@ -182,7 +181,6 @@ export const updateScore = (scene) => {
             scene.bestScoreText.setText(`Best: ${scene.highestScore}`);
         }
     }
-
     if (scene.bananaCounterText) {
         scene.bananaCounterText.setText(`X ${scene.bananaCounter}`);
     }
@@ -201,8 +199,8 @@ const updateDarkerBackground = (scene) => {
 
 const updateFallDamage = (scene) => {
     const velocityThreshold = 200;
-    const maxVelocity = 2000; 
-    const maxDamage = 100; 
+    const maxVelocity = 2000;
+    const maxDamage = 100;
 
     if (scene.player.body.touching.down && scene.player.prevVelocityY > velocityThreshold) {
         const damageFactor = Phaser.Math.Clamp(
@@ -217,17 +215,43 @@ const updateFallDamage = (scene) => {
     scene.player.prevVelocityY = scene.player.body.velocity.y;
 }
 
+const checkPlayerAlive = (scene) => {
+    if (scene.playerHealth <= 90 && !scene.playerHasDied) {
+        scene.playerHasDied = true;
+
+        if (scene.player.isMovingRight) {
+            scene.player.setTexture("death_monkey_right");
+        } else {
+            scene.player.setTexture("death_monkey_left");
+        }
+
+        scene.player.body.setVelocity(0, 0);
+        scene.player.setActive(false);
+
+        setTimeout(() => {
+
+            // Ensure all necessary cleanup or changes are done before restarting
+            scene.isFontLoaded = false;
+            scene.scoreText = null;
+            scene.scene.restart(); // Re-start the scene
+            scene.playerHasDied = false;
+        }, 2000);
+    }
+};
+
 export const updateGameScene = (scene) => {
     if (scene.isFontLoaded && !scene.scoreText) {
         initializeUI(scene);
     }
-
+    if (scene.isFontLoaded && scene.scoreText) {
+        updateScore(scene);
+    }
     handlePlayerInput(scene, scene.player, scene.cursor);
     updateGround(scene);
     updatePlatforms(scene);
-    updateScore(scene);
+
     updateDarkerBackground(scene);
     updateFallDamage(scene);
     updateHealthBar(scene);
-
-}
+    checkPlayerAlive(scene); // Now safe to call repeatedly
+};
