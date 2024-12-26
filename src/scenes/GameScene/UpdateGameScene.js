@@ -108,6 +108,13 @@ export const updatePlatforms = (scene) => {
         scene.physics.add.collider(scene.player, scene.platforms);
     }
 
+    // if player not on platform remove lastplatformx - used for placing on moving platforms
+    if (!scene.physics.collide(scene.player, scene.platforms)) {
+        if (scene.player.onPlatform && !scene.player.body.touching.down) {
+            scene.player.onPlatform = false;
+            scene.player.lastPlatformX = null;
+        }
+    }
 }
 
 export const updateScore = (scene) => {
@@ -157,4 +164,6 @@ export const updateGameScene = (scene) => {
     updatePlatforms(scene);
     updateScore(scene);
     updateDarkerBackground(scene);
+
+
 }

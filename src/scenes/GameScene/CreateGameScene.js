@@ -11,7 +11,7 @@ export const createGameScene = (scene) => {
 
     scene.lastPlatformX = 100;
     scene.totalPlatformsCreated = 0;
-    const baseColor = "#87CEEB"; // Light blue base color
+    const baseColor = "#87CEEB"; 
     scene.cameras.main.setBackgroundColor(baseColor);
     const groundWidth = 2000;
     const groundHeight = 100;
@@ -24,6 +24,18 @@ export const createGameScene = (scene) => {
     scene.physics.add.collider(scene.ground, scene.player);
     scene.cursor = scene.input.keyboard.createCursorKeys();
     createPlatforms(scene, windowWidth, windowHeight, scene.lastPlatformX, scene.totalPlatformsCreated);
-    scene.physics.add.collider(scene.player, scene.platforms);
+    scene.physics.add.collider(scene.player, scene.platforms, (player, platform) => {
+        if (player.body.touching.down && platform.body.touching.up) {
+            if (!player.onPlatform) {
+                player.lastPlatformX = platform.x;
+                player.onPlatform = true;
+            }
+            const platformDeltaX = platform.x - player.lastPlatformX;
+
+            player.x += platformDeltaX;
+
+            player.lastPlatformX = platform.x;
+        }
+    });
     scene.cameras.main.startFollow(scene.player);
 };
