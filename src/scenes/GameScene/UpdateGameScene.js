@@ -216,7 +216,7 @@ const updateFallDamage = (scene) => {
 }
 
 const checkPlayerAlive = (scene) => {
-    if (scene.playerHealth <= 90 && !scene.playerHasDied) {
+    if (scene.playerHealth <= 0 && !scene.playerHasDied) {
         scene.playerHasDied = true;
 
         if (scene.player.isMovingRight) {
