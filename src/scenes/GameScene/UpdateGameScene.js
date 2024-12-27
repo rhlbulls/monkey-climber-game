@@ -195,7 +195,7 @@ const updateDarkerBackground = (scene) => {
 }
 
 const updateFallDamage = (scene) => {
-    const velocityThreshold = 200;
+    const velocityThreshold = 300;
     const maxVelocity = 2000;
     const maxDamage = 100;
 
