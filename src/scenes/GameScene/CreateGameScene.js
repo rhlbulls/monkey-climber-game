@@ -4,7 +4,6 @@ import { createPlatforms } from "../../objects/Platform";
 
 const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
-
 export function throwBanana(scene, targetX, targetY) {
     if (scene.bananaCounter <= 0) return;
 
@@ -13,7 +12,7 @@ export function throwBanana(scene, targetX, targetY) {
 
     const banana = scene.physics.add.sprite(scene.player.x, scene.player.y, 'banana').setScale(0.5);
 
-    banana.body.setAllowGravity(true);  
+    banana.body.setAllowGravity(true);
 
     const mouseWorldPos = scene.cameras.main.getWorldPoint(targetX, targetY);
     const mouseWorldX = mouseWorldPos.x;
@@ -24,7 +23,7 @@ export function throwBanana(scene, targetX, targetY) {
 
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    const velocityX = (dx / distance) * 700; 
+    const velocityX = (dx / distance) * 700;
     const velocityY = (dy / distance) * 700;
 
     banana.body.setVelocity(velocityX, velocityY);
@@ -37,13 +36,11 @@ export function throwBanana(scene, targetX, targetY) {
         callbackScope: scene
     });
 
-    scene.physics.add.overlap(banana, scene.aliens, (banana, alien) => {
-        alien.destroy();
+    scene.physics.add.collider(banana, scene.aliens, (banana, alien) => {
+        alien.destroyAlien();
         banana.destroy();
     });
 }
-
-
 
 export const createGameScene = (scene) => {
     scene.bananaCounter = 0;
@@ -51,8 +48,12 @@ export const createGameScene = (scene) => {
     scene.platforms = scene.physics.add.group({
         immovable: true,
         allowGravity: false,
-    })
+    });
     scene.highestScore = 0;
+    scene.aliens = scene.physics.add.group({ 
+        immovable: true,
+        allowGravity: false,
+    });
 
     scene.lastPlatformX = 100;
     scene.totalPlatformsCreated = 0;
@@ -83,7 +84,6 @@ export const createGameScene = (scene) => {
         }
     });
     scene.cameras.main.startFollow(scene.player);
-
 
     scene.input.on('pointerdown', (pointer) => {
         if (scene.bananaCounter > 0) {

@@ -98,13 +98,13 @@ function createAlien(scene, x, y, platformWidth) {
     const leftLimit = x - platformWidth / 2 - 50;
     const rightLimit = x + platformWidth / 2 + 50;
 
-    alien.setOrigin(0.5, 1); 
+    alien.setOrigin(0.5, 1);
 
     scene.physics.world.enable(alien);
     alien.body.setAllowGravity(false);
     alien.body.setImmovable(true);
 
-    scene.tweens.add({
+    const tween = scene.tweens.add({
         targets: alien,
         x: { from: leftLimit, to: rightLimit },
         duration: (rightLimit - leftLimit) * 1000 / alien.speed,
@@ -112,39 +112,46 @@ function createAlien(scene, x, y, platformWidth) {
         repeat: -1,
         ease: "Linear",
         onYoyo: () => {
-            alien.direction = "left";
+            alien.direction = "left"; 
         },
         onRepeat: () => {
-            alien.direction = "right"; 
+            alien.direction = "right";
         },
         onUpdate: () => {
             frameCounter++;
             if (frameCounter >= frameRate) {
-                frameCounter = 0; 
-                currentFrame = (currentFrame + 1) % 4; 
+                frameCounter = 0;
+                currentFrame = (currentFrame + 1) % 4;
                 alien.setTexture(animationFrames[alien.direction][currentFrame]);
             }
         },
+        onStart: () => {
+            alien.y = y - 10; 
+        },
     });
+
+    alien.destroyAlien = () => {
+        tween.stop();
+        alien.destroy();
+    };
+
+    scene.aliens.add(alien);
 
     scene.physics.add.collider(scene.player, alien, () => {
         if (scene.playerHealth > 0) {
-            scene.playerHealth -= 5; 
+            scene.playerHealth -= 5;
         }
 
         const pushDirection = alien.direction === "right" ? 50 : -50;
 
         scene.tweens.add({
             targets: scene.player,
-            x: scene.player.x + pushDirection, 
-            duration: 300, 
-            ease: "Power2", 
+            x: scene.player.x + pushDirection,
+            duration: 300,
+            ease: "Power2",
         });
     });
 }
-
-
-
 
 function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
     const isSliding = Math.random() > 0.8;
@@ -159,12 +166,12 @@ function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
             .setSize(platformWidth, platformHeight)
             .setOrigin(0.5, 0.5);
 
-        if (Math.random() > 0.2) {
+        if (Math.random() > 0.5) {
             createBanana(scene, x, y - 40);
         }
         else if (Math.random() > 0.9) {
             createHeart(scene, x, y - 40);
-        } else if (Math.random() > 0.8) {
+        } else if (Math.random() > 0.4) {
             createAlien(scene, x, y, platformWidth);
         }
     }
