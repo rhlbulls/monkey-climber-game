@@ -14,8 +14,8 @@ let windowHeight = window.innerHeight;
 if (isPhone()) {
   const message = `
     <div style="position: fixed;width:80%; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: Arial, sans-serif; color: white; background-color: rgba(0, 0, 0, 0.7); padding: 20px; text-align: center; font-size: 20px; border-radius: 10px;">
-      <p><strong>What’s Going On? Why No Phone Version?</strong></p>
-      <p>The monkey’s still practicing its jump! It’s like, ‘I need more space to leap!’ Right now, it can only make those big, epic jumps on a large screen—your phone just doesn’t have enough room for its wild acrobatics! 🌳🐒</p>
+      <p><strong>Mobile Version Coming Soon</strong></p>
+      <p>Currently, this version of the game is not available on mobile devices. We are actively working on a mobile version, and it will be released soon. Please check back later for updates. Thank you for your patience and understanding!🌳🐒</p>
     </div>
   `;
   document.body.innerHTML = message;

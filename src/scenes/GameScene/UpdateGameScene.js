@@ -54,13 +54,12 @@ const createInstructionText = (scene) => {
     scene.highestScore = parseInt(localStorage.getItem('highScore')) || 0;
 
     if (scene.highestScore === 0) {
-        const instructions = "- Move with arrow keys or WASD—space bar to jump\n- Collect bananas—you'll need them to crush enemies.\n- Press E or left-click to throw bananas. \n- The higher you go, the more points you earn!";
+        const instructions = "- Move with arrow keys or WASD—space bar to jump\n- Collect bananas—you'll need them to crush enemies.\n- left-click to throw bananas on enemies. \n- The higher you go, the more points you earn!";
 
-        // Create the instruction text object but keep it empty initially
         scene.instructionText = scene.add.text(
-            scene.cameras.main.width / 2, // Horizontally center
-            scene.cameras.main.height + 100, // Near the bottom of the screen
-            '', // Start with an empty string for typewriter effect
+            scene.cameras.main.width / 2, 
+            scene.cameras.main.height + 100,
+            '', 
             {
                 fontSize: '16px',
                 fill: '#ffffff',
@@ -68,12 +67,12 @@ const createInstructionText = (scene) => {
                 lineSpacing: 10
             }
         )
-            .setDepth(100) // Ensure it's on top of other elements
-            .setOrigin(0.5, 1); // Center horizontally and align to the bottom
+            .setDepth(100) 
+            .setOrigin(0.5, 1);
 
-        let currentText = ''; // Track the current text
-        let index = 0; // Track the current character index
-        const typingSpeed = 50; // Time between each character (in ms)
+        let currentText = ''; 
+        let index = 0; 
+        const typingSpeed = 50;
 
         scene.time.addEvent({
             delay: typingSpeed,
@@ -82,7 +81,6 @@ const createInstructionText = (scene) => {
                     currentText += instructions.charAt(index);
                     scene.instructionText.setText(currentText);
 
-                    // Keep the text horizontally centered
                     scene.instructionText.x = 0;
 
                     index++;
@@ -154,7 +152,6 @@ export const updatePlatforms = (scene) => {
         scene.physics.add.collider(scene.player, scene.platforms);
     }
 
-    // if player not on platform remove lastplatformx - used for placing on moving platforms
     if (!scene.physics.collide(scene.player, scene.platforms)) {
         if (scene.player.onPlatform && !scene.player.body.touching.down) {
             scene.player.onPlatform = false;
@@ -219,7 +216,7 @@ export const resetAfterDeath = (scene) => {
     setTimeout(() => {
         scene.isFontLoaded = false;
         scene.scoreText = null;
-        scene.scene.restart(); // Re-start the scene
+        scene.scene.restart();
         scene.playerHasDied = false;
     }, 2000);
 }
@@ -254,5 +251,5 @@ export const updateGameScene = (scene) => {
     updateDarkerBackground(scene);
     updateFallDamage(scene);
     updateHealthBar(scene);
-    checkPlayerAlive(scene); // Now safe to call repeatedly
+    checkPlayerAlive(scene); 
 };

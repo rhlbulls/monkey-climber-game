@@ -75,7 +75,7 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
         const elapsed = scene.time.now;
         const slideOffset = Math.sin(elapsed * slideSpeed) * slideRange;
 
-        platform.setX(platform.initialX + slideOffset); // Update visual position only
+        platform.setX(platform.initialX + slideOffset); 
     });
 }
 

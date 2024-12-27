@@ -2,9 +2,12 @@ html,
 body {
     margin: 0rem;
     overflow: hidden;
+    cursor:url(/public/assets/aim.png), auto;
 }
 
 #gameCanvas {
+ 
+
     position: absolute;
     top: 50%;
     left: 50%;

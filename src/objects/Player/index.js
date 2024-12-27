@@ -35,11 +35,49 @@ function changeTextureSequentially(player, textures, interval) {
     }, interval);
 }
 
+export function throwBanana(scene, targetX, targetY) {
+    if (scene.bananaCounter <= 0) return;
+
+    scene.bananaCounter--;
+    scene.bananaCounterText.setText(`X ${scene.bananaCounter}`);
+
+    const banana = scene.physics.add.sprite(scene.player.x, scene.player.y, 'banana').setScale(0.5);
+
+    banana.body.setAllowGravity(true);
+
+    const mouseWorldPos = scene.cameras.main.getWorldPoint(targetX, targetY);
+    const mouseWorldX = mouseWorldPos.x;
+    const mouseWorldY = mouseWorldPos.y;
+
+    const dx = mouseWorldX - scene.player.x;
+    const dy = mouseWorldY - scene.player.y;
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const velocityX = (dx / distance) * 700;
+    const velocityY = (dy / distance) * 700;
+
+    banana.body.setVelocity(velocityX, velocityY);
+
+    banana.rotation = Math.atan2(dy, dx);
+
+    scene.time.addEvent({
+        delay: 3000,
+        callback: () => banana.destroy(),
+        callbackScope: scene
+    });
+
+    scene.physics.add.collider(banana, scene.aliens, (banana, alien) => {
+        alien.destroyAlien();
+        banana.destroy();
+    });
+}
+
 export function handlePlayerInput(scene, player, cursorKeys) {
     if (scene.playerHasDied) {
         return;
     }
-    
+
     const { left, right, up } = cursorKeys;
 
     const jumpKey = scene.input.keyboard.addKey('W');
@@ -53,7 +91,6 @@ export function handlePlayerInput(scene, player, cursorKeys) {
     const leftKey = scene.input.keyboard.addKey('A');
     const rightKey = scene.input.keyboard.addKey('D');
 
-    // Handle left movement
     if (left.isDown || leftKey.isDown) {
         player.isMovingLeft = true;
         player.isMovingRight = false;
