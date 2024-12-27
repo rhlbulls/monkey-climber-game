@@ -75,7 +75,7 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
         const elapsed = scene.time.now;
         const slideOffset = Math.sin(elapsed * slideSpeed) * slideRange;
 
-        platform.setX(platform.initialX + slideOffset); 
+        platform.setX(platform.initialX + slideOffset);
     });
 }
 
@@ -112,7 +112,7 @@ function createAlien(scene, x, y, platformWidth) {
         repeat: -1,
         ease: "Linear",
         onYoyo: () => {
-            alien.direction = "left"; 
+            alien.direction = "left";
         },
         onRepeat: () => {
             alien.direction = "right";
@@ -126,7 +126,7 @@ function createAlien(scene, x, y, platformWidth) {
             }
         },
         onStart: () => {
-            alien.y = y - 10; 
+            alien.y = y - 10;
         },
     });
 
@@ -153,12 +153,15 @@ function createAlien(scene, x, y, platformWidth) {
     });
 }
 
-function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
-    const isSliding = Math.random() > 0.8;
+function createPlatformAndItem(scene, x, y, platformWidth, platformHeight, totalPlatformsCreated) {
+    const maxDifficulty = 10;
+    const difficultyFactor = (totalPlatformsCreated ?? 0 / maxDifficulty) * 0.0001;
+
+    const isSliding = Math.random() > 0.8 - difficultyFactor;
 
     if (isSliding) {
-        const slideRange = Math.random() * 100 + 50;
-        const slideSpeed = 0.001 + Math.random() * 0.0005;
+        const slideRange = (Math.random() * 100 + 50) + difficultyFactor;
+        const slideSpeed = (0.001 + Math.random() * 0.0005) + difficultyFactor;
         createSlidingPlatform(scene, x, y, slideRange, slideSpeed);
 
     } else {
@@ -166,12 +169,12 @@ function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
             .setSize(platformWidth, platformHeight)
             .setOrigin(0.5, 0.5);
 
-        if (Math.random() > 0.5) {
+        if (Math.random() > 0.5 + difficultyFactor) {
             createBanana(scene, x, y - 40);
         }
-        else if (Math.random() > 0.9) {
+        else if (Math.random() > 0.9 - difficultyFactor) {
             createHeart(scene, x, y - 40);
-        } else if (Math.random() > 0.4) {
+        } else if (Math.random() > 0.5 - difficultyFactor) {
             createAlien(scene, x, y, platformWidth);
         }
     }
@@ -196,7 +199,7 @@ export function createPlatforms(scene, windowWidth, windowHeight, lastX, totalPl
 
         lastX = x;
 
-        createPlatformAndItem(scene, x, y, platformWidth, platformHeight);
+        createPlatformAndItem(scene, x, y, platformWidth, platformHeight, totalPlatformsCreated);
 
         if (i === totalPlatformsCreated + 9) {
             scene.lastPlatformY = y;
