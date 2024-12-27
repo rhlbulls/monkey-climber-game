@@ -79,6 +79,72 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
     });
 }
 
+function createAlien(scene, x, y, platformWidth) {
+    const alien = scene.add.sprite(x, y - 10, "alien_right_1").setScale(0.5);
+
+    alien.direction = Math.random() > 0.5 ? "right" : "left";
+    alien.speed = Math.random() * 50 + 50;
+    alien.platformWidth = platformWidth;
+
+    const animationFrames = {
+        right: ["alien_right_1", "alien_right_2", "alien_right_3", "alien_right_4"],
+        left: ["alien_left_1", "alien_left_2", "alien_left_3", "alien_left_4"],
+    };
+
+    let currentFrame = 0;
+    const frameRate = 4;
+    let frameCounter = 0;
+
+    const leftLimit = x - platformWidth / 2 - 50;
+    const rightLimit = x + platformWidth / 2 + 50;
+
+    alien.setOrigin(0.5, 1); 
+
+    scene.physics.world.enable(alien);
+    alien.body.setAllowGravity(false);
+    alien.body.setImmovable(true);
+
+    scene.tweens.add({
+        targets: alien,
+        x: { from: leftLimit, to: rightLimit },
+        duration: (rightLimit - leftLimit) * 1000 / alien.speed,
+        yoyo: true,
+        repeat: -1,
+        ease: "Linear",
+        onYoyo: () => {
+            alien.direction = "left";
+        },
+        onRepeat: () => {
+            alien.direction = "right"; 
+        },
+        onUpdate: () => {
+            frameCounter++;
+            if (frameCounter >= frameRate) {
+                frameCounter = 0; 
+                currentFrame = (currentFrame + 1) % 4; 
+                alien.setTexture(animationFrames[alien.direction][currentFrame]);
+            }
+        },
+    });
+
+    scene.physics.add.collider(scene.player, alien, () => {
+        if (scene.playerHealth > 0) {
+            scene.playerHealth -= 5; 
+        }
+
+        const pushDirection = alien.direction === "right" ? 50 : -50;
+
+        scene.tweens.add({
+            targets: scene.player,
+            x: scene.player.x + pushDirection, 
+            duration: 300, 
+            ease: "Power2", 
+        });
+    });
+}
+
+
+
 
 function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
     const isSliding = Math.random() > 0.8;
@@ -98,6 +164,8 @@ function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
         }
         else if (Math.random() > 0.9) {
             createHeart(scene, x, y - 40);
+        } else if (Math.random() > 0.5) {
+            createAlien(scene, x, y, platformWidth);
         }
     }
 }
