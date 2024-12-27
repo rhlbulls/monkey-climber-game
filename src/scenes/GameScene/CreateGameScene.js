@@ -5,12 +5,52 @@ import { createPlatforms } from "../../objects/Platform";
 const windowWidth = window.innerWidth;
 const windowHeight = window.innerHeight;
 
+export function throwBanana(scene, targetX, targetY) {
+    if (scene.bananaCounter <= 0) return;
+
+    scene.bananaCounter--;
+    scene.bananaCounterText.setText(`X ${scene.bananaCounter}`);
+
+    const banana = scene.physics.add.sprite(scene.player.x, scene.player.y, 'banana').setScale(0.5);
+
+    banana.body.setAllowGravity(true);  
+
+    const mouseWorldPos = scene.cameras.main.getWorldPoint(targetX, targetY);
+    const mouseWorldX = mouseWorldPos.x;
+    const mouseWorldY = mouseWorldPos.y;
+
+    const dx = mouseWorldX - scene.player.x;
+    const dy = mouseWorldY - scene.player.y;
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const velocityX = (dx / distance) * 700; 
+    const velocityY = (dy / distance) * 700;
+
+    banana.body.setVelocity(velocityX, velocityY);
+
+    banana.rotation = Math.atan2(dy, dx);
+
+    scene.time.addEvent({
+        delay: 3000,
+        callback: () => banana.destroy(),
+        callbackScope: scene
+    });
+
+    scene.physics.add.overlap(banana, scene.aliens, (banana, alien) => {
+        alien.destroy();
+        banana.destroy();
+    });
+}
+
+
+
 export const createGameScene = (scene) => {
     scene.bananaCounter = 0;
     scene.playerHealth = 100;
     scene.platforms = scene.physics.add.group({
-        immovable: true, // Prevent the platform from being affected by forces
-        allowGravity: false, // Ignore gravity for platforms
+        immovable: true,
+        allowGravity: false,
     })
     scene.highestScore = 0;
 
@@ -43,4 +83,11 @@ export const createGameScene = (scene) => {
         }
     });
     scene.cameras.main.startFollow(scene.player);
+
+
+    scene.input.on('pointerdown', (pointer) => {
+        if (scene.bananaCounter > 0) {
+            throwBanana(scene, pointer.x, pointer.y);
+        }
+    });
 };

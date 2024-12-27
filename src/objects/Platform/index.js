@@ -159,12 +159,12 @@ function createPlatformAndItem(scene, x, y, platformWidth, platformHeight) {
             .setSize(platformWidth, platformHeight)
             .setOrigin(0.5, 0.5);
 
-        if (Math.random() > 0.7) {
+        if (Math.random() > 0.2) {
             createBanana(scene, x, y - 40);
         }
         else if (Math.random() > 0.9) {
             createHeart(scene, x, y - 40);
-        } else if (Math.random() > 0.5) {
+        } else if (Math.random() > 0.8) {
             createAlien(scene, x, y, platformWidth);
         }
     }
