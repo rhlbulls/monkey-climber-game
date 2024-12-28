@@ -32,13 +32,20 @@ All game assets are available in the [monkey-climber-assets](https://github.com/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/<your-repo>/monkey-climber.git
+   git clone https://github.com/rhlbulls/monkey-climber-game.git
    ```
 2. Navigate to the project folder:
    ```bash
-   cd monkey-climber
+   cd monkey-climber-game
    ```
-3. Open the `index.html` file in your browser to start playing.
+3. Install packages:
+   ```bash
+   npm i
+   ```
+4. Run:
+   ```bash
+   npm run dev
+   ```
 
 ## Screenshots
 
