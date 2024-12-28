@@ -2,6 +2,8 @@
 
 Monkey Climber is a fast-paced, action-packed climbing game where you control a monkey scaling platforms, collecting bananas, and battling aliens! This game was built purely in JavaScript using the Phaser.js physics engine, with all assets crafted in Aseprite.
 
+![monkey-mochi](https://github.com/user-attachments/assets/a60bb134-1e39-4a38-8a74-f911442ae5d7)
+
 ## Game Features
 
 - **Bananas for Ammo**: Collect bananas placed on the platforms to attack aliens by clicking your mouse.
@@ -40,17 +42,13 @@ All game assets are available in the [monkey-climber-assets](https://github.com/
 
 ## Screenshots
 
-(Include screenshots or GIFs of gameplay here)
+![monkey-mochi](https://github.com/user-attachments/assets/d02a1cfd-0275-4837-82af-cf1a65680e2e)
+
 
 ## Contributing
 
 Contributions are welcome! Feel free to fork the repository and submit a pull request.
 
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for details.
-
----
 
 Happy climbing and alien-blasting!
 
