@@ -79,11 +79,11 @@ function createSlidingPlatform(scene, x, y, slideRange, slideSpeed) {
     });
 }
 
-function createAlien(scene, x, y, platformWidth) {
+function createAlien(scene, x, y, platformWidth, slideSpeed) {
     const alien = scene.add.sprite(x, y - 10, "alien_right_1").setScale(0.5);
 
     alien.direction = Math.random() > 0.5 ? "right" : "left";
-    alien.speed = Math.random() * 50 + 50;
+    alien.speed = Math.random() * 50 + 50 + slideSpeed;
     alien.platformWidth = platformWidth;
 
     const animationFrames = {
@@ -107,7 +107,7 @@ function createAlien(scene, x, y, platformWidth) {
     const tween = scene.tweens.add({
         targets: alien,
         x: { from: leftLimit, to: rightLimit },
-        duration: (rightLimit - leftLimit) * 1000 / alien.speed,
+        duration: (rightLimit - leftLimit) * 700 / alien.speed,
         yoyo: true,
         repeat: -1,
         ease: "Linear",
@@ -155,13 +155,14 @@ function createAlien(scene, x, y, platformWidth) {
 
 function createPlatformAndItem(scene, x, y, platformWidth, platformHeight, totalPlatformsCreated) {
     const maxDifficulty = 10;
-    const difficultyFactor = (totalPlatformsCreated ?? 0 / maxDifficulty) * 0.0001;
+    const difficultyFactor = (totalPlatformsCreated ?? 0 / maxDifficulty) * 0.01;
 
-    const isSliding = Math.random() > 0.8 - difficultyFactor;
+    const isSliding = Math.random() > 0.8 - difficultyFactor * 0.1;
 
+    const slideRange = ((Math.random()) * 100 + 50) + difficultyFactor;
+    const slideSpeed = ((0.001 + Math.random() + difficultyFactor) * 0.001);
     if (isSliding) {
-        const slideRange = (Math.random() * 100 + 50) + difficultyFactor;
-        const slideSpeed = (0.001 + Math.random() * 0.0005) + difficultyFactor;
+
         createSlidingPlatform(scene, x, y, slideRange, slideSpeed);
 
     } else {
@@ -175,7 +176,7 @@ function createPlatformAndItem(scene, x, y, platformWidth, platformHeight, total
         else if (Math.random() > 0.9 - difficultyFactor) {
             createHeart(scene, x, y - 40);
         } else if (Math.random() > 0.5 - difficultyFactor) {
-            createAlien(scene, x, y, platformWidth);
+            createAlien(scene, x, y, platformWidth, slideSpeed);
         }
     }
 }
